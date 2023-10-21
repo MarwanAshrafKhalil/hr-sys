@@ -14,7 +14,8 @@ const employeeSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      (state.currentUser = action.payload), (state.loading = false);
+      state.currentUser = action.payload;
+      state.loading = false;
       state.error = false;
     },
     signInFailure: (state, action) => {
