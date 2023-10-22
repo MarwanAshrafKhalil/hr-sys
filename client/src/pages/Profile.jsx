@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -11,18 +11,21 @@ import { app } from "../firebase";
 export default function Profile() {
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
-  const [imagePercent, setImagePercent] = useState(0);
+  const [imagePercentage, setImagePercentage] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
-  const { currentUser } = useSelector((state) => state.employee);
 
+  console.log(formData);
+
+  const { currentUser } = useSelector((state) => state.employee);
   useEffect(() => {
     if (image) {
       handleFileUpload(image);
     }
   }, [image]);
 
-  const handleFileUpload = async (image) => {
+  async function handleFileUpload(image) {
+    console.log(image);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + image.name;
     const storageRef = ref(storage, fileName);
@@ -32,21 +35,19 @@ export default function Profile() {
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setImagePercent(Math.round(progress));
+        setImagePercentage(Math.round(progress));
+        // console.log("Upload is " + progress + "% done");
       },
       (error) => {
         setImageError(true);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, profilePicture: downloadURL })
+          setFormData({ ...FormData, profilePicture: downloadURL })
         );
       }
     );
-  };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+  }
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -60,20 +61,20 @@ export default function Profile() {
           onChange={(e) => setImage(e.target.files[0])}
         />
         <img
-          src={formData.profilePicture || currentUser.profilePicture}
+          className=" w-15 h-15 mt-2 self-center cursor-pointer rounded-full object-cover"
+          src={currentUser.profilePicture}
           alt="profile"
-          className="h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2"
           onClick={() => fileRef.current.click()}
         />
-        <p className="text-sm self-center">
+        <p className=" text-sm self-center">
           {imageError ? (
-            <span className="text-red-700">
-              Error uploading image (file size must be less than 2 MB)
+            <span className="text-red-700">Error Uploading</span>
+          ) : imagePercentage > 0 && imagePercentage < 100 ? (
+            <span>{`Uploading... ${imagePercentage}%`}</span>
+          ) : imagePercentage === 100 ? (
+            <span className=" text-green-700">
+              {"Image uploaded Successfully"}
             </span>
-          ) : imagePercent > 0 && imagePercent < 100 ? (
-            <span className="text-slate-700">{`Uploading: ${imagePercent}%`}</span>
-          ) : imagePercent === 100 ? (
-            <span className="text-green-700">Image uploaded successfully</span>
           ) : (
             ""
           )}
