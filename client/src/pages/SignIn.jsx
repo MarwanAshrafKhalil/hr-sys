@@ -1,12 +1,12 @@
 // import axios from "axios";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  signInStart,
+  loaderError,
+  openLoader,
   signInSuccess,
-  signInFailure,
 } from "../redux/employee/employeeSlice";
-import { useDispatch, useSelector } from "react-redux";
 import OAuth from "./components/OAuth";
 
 export default function SignIn() {
@@ -15,6 +15,8 @@ export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  console.log(error);
+
   function handleChange(e) {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   }
@@ -22,7 +24,7 @@ export default function SignIn() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      dispatch(signInStart());
+      dispatch(openLoader());
 
       const res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -35,7 +37,7 @@ export default function SignIn() {
 
       //only added for fetch method, as sometimes the error is returned inside data
       if (data.success == false) {
-        dispatch(signInFailure(data));
+        dispatch(loaderError(data));
         return;
       }
       dispatch(signInSuccess(data));
@@ -44,7 +46,7 @@ export default function SignIn() {
       // console.log(res.data);
       navigate("/");
     } catch (error) {
-      dispatch(signInFailure(error));
+      dispatch(loaderError(error));
     }
   }
 
@@ -84,7 +86,9 @@ export default function SignIn() {
         </Link>
       </div>
       <p className="text-red-700 mt-3">
-        {error ? error.message : "Something went wrong!"}
+        {console.log(error)}
+        {error && error.message}
+        {/* : "Something went wrong!" */}
       </p>
     </div>
   );

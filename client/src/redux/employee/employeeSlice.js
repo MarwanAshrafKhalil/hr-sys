@@ -10,7 +10,7 @@ const employeeSlice = createSlice({
   name: "employee",
   initialState,
   reducers: {
-    signInStart: (state) => {
+    openLoader: (state) => {
       state.loading = true;
     },
     signInSuccess: (state, action) => {
@@ -18,14 +18,33 @@ const employeeSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
-    signInFailure: (state, action) => {
+    updateEmployeeSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    deleteEmployeeSuccess: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = false;
+    },
+
+    loaderError: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
+    // closeLoader: (state) => {
+    //   state.loading = false;
+    // },
   },
 });
 
-export const { signInStart, signInSuccess, signInFailure } =
-  employeeSlice.actions;
+export const {
+  openLoader,
+  signInSuccess,
+  loaderError,
+  updateEmployeeSuccess,
+  deleteEmployeeSuccess,
+} = employeeSlice.actions;
 
 export default employeeSlice.reducer;
