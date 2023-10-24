@@ -9,7 +9,7 @@ export default function Header() {
         <Link to="/">
           <h1 className="font-bold"> Auth App</h1>{" "}
         </Link>
-        <ul className="flex gap-4 ">
+        <ul className="flex gap-4 font-semibold ">
           <Link to="/">
             <li>Home</li>
           </Link>
