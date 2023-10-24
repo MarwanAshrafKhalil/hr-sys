@@ -28,6 +28,11 @@ const employeeSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
+    signoutEmployee: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = false;
+    },
 
     loaderError: (state, action) => {
       state.loading = false;
@@ -45,6 +50,7 @@ export const {
   loaderError,
   updateEmployeeSuccess,
   deleteEmployeeSuccess,
+  signoutEmployee,
 } = employeeSlice.actions;
 
 export default employeeSlice.reducer;

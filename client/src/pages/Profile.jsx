@@ -12,6 +12,7 @@ import {
   openLoader,
   updateEmployeeSuccess,
   deleteEmployeeSuccess,
+  signoutEmployee,
 } from "../redux/employee/employeeSlice";
 
 export default function Profile() {
@@ -101,6 +102,16 @@ export default function Profile() {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      dispatch(openLoader());
+      await fetch("/api/auth/signout");
+      dispatch(signoutEmployee());
+    } catch (error) {
+      dispatch(loaderError());
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7 ">Profile</h1>
@@ -162,7 +173,9 @@ export default function Profile() {
         <span onClick={handleDelete} className=" text-red-700 cursor-pointer">
           Delete Account
         </span>
-        <span className=" text-red-700 cursor-pointer">Sign out</span>
+        <span onClick={handleSignOut} className=" text-red-700 cursor-pointer">
+          Sign out
+        </span>
       </div>
       <div className=" mt-4 slef-center text-center ">
         <p className="text-red-700 ">{error && "Something went wrong!"}</p>
