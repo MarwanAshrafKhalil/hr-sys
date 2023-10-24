@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import employeeRoutes from "./routes/Employee.route.js";
 import authRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 dotenv.config();
 
 mongoose
@@ -15,7 +16,19 @@ mongoose
     console.log(err);
   });
 
+const __dirname = path.resolve();
+
 const app = express();
+
+/// vv adding in the deploy phase
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
+
+/// ^^ adding in the deploy phase
 
 app.use(express.json());
 
